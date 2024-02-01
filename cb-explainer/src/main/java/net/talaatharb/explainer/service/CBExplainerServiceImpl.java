@@ -1,17 +1,15 @@
 package net.talaatharb.explainer.service;
 
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
-import org.springframework.stereotype.Service;
 
 import com.couchbase.client.java.query.QueryResult;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
 @RequiredArgsConstructor
-public class CBExplainServiceImpl implements CBExplainService {
+public class CBExplainerServiceImpl implements CBExplainerService {
 
 	@Override
 	public String explain(CouchbaseTemplate template, String query) {

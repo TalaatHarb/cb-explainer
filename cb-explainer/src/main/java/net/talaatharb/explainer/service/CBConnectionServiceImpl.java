@@ -11,14 +11,12 @@ import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.data.couchbase.core.convert.CouchbaseConverter;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
-import org.springframework.stereotype.Service;
 
 import com.couchbase.client.java.Cluster;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
 @RequiredArgsConstructor
 public class CBConnectionServiceImpl implements CBConnectionService {

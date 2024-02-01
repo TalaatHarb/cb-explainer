@@ -34,7 +34,7 @@
 		<dependency-check-maven.version>7.3.0</dependency-check-maven.version>
 		<maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
 		<!-- Java fx -->
-		<javafx.version>17.0.1</javafx.version>
+		<javafx.version>18.0.2</javafx.version>
 		<testfx.version>4.0.16-alpha</testfx.version>
 		<monocole.version>jdk-11+26</monocole.version>
 	</properties>
@@ -54,6 +54,10 @@
 			<artifactId>spring-boot-starter-data-couchbase</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
@@ -67,6 +71,11 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-graphics</artifactId>
 			<version>${javafx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.vlsi.mxgraph</groupId>
+			<artifactId>jgraphx</artifactId>
+			<version>4.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.testfx</groupId>
