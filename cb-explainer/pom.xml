@@ -1,9 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.talaatharb</groupId>
 	<artifactId>cb-explainer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cb-explainer</name>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.2</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
 	<properties>
 		<!-- language encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -18,31 +26,23 @@
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<slf4jVersion>2.0.3</slf4jVersion>
 		<!-- Testing -->
-		<junit.version>5.9.1</junit.version>
-		<junit.platform.version>1.9.1</junit.platform.version>
 		<minimum-coverage-ratio>0.8</minimum-coverage-ratio>
 		<pitest.version>1.9.5</pitest.version>
 		<pitest-junit5-plugin.version>1.1.0</pitest-junit5-plugin.version>
-		<mockito.version>2.0.2-beta</mockito.version>
 		<!-- Maven plugins -->
-		<maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-		<maven-apache-test-plugins.version>3.0.0-M6</maven-apache-test-plugins.version>
-		<maven-apache-plugins.version>3.10.1</maven-apache-plugins.version>
-		<maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
 		<jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
 		<dependency-check-maven.version>7.3.0</dependency-check-maven.version>
 		<maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
+		<!-- Java fx -->
+		<javafx.version>17.0.1</javafx.version>
+		<testfx.version>4.0.16-alpha</testfx.version>
+		<monocole.version>jdk-11+26</monocole.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4jVersion}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
@@ -50,24 +50,52 @@
 			<version>${mapstruct.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>${junit.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-couchbase</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>${javafx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<version>${javafx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>${javafx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.testfx</groupId>
+			<artifactId>testfx-junit5</artifactId>
+			<version>${testfx.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
+			<groupId>org.testfx</groupId>
+			<artifactId>openjfx-monocle</artifactId>
+			<version>${monocole.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-apache-plugins.version}</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
@@ -90,56 +118,11 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin.version}</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>
-								net.talaatharb.explainer.CBExplainerApplication
-							</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
-
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>net.talaatharb.explainer.CBExplainerApplication</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<appendAssemblyId>false</appendAssemblyId>
-				</configuration>
-
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-apache-test-plugins.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${maven-apache-test-plugins.version}</version>
 				<executions>
 					<execution>
 						<goals>
