@@ -1,7 +1,25 @@
-# template-java
-Template for simple java projects, that includes tests and some maven plugins
+# cb-explainer
+simple application to get explain plan of queries to couchbase
 
 
+## usage
+create file cb.properties (that contains connection properties) beside the jar or inside root directory
+
+file has to be similar to this:
+
+connection=couchbase://localhost
+user=username
+pass=password
+bucket=bucketName
+scope=_default
+
+then run the application
+
+```
+java -jar cb-explainer-0.0.1-SNAPSHOT.jar
+```
+
+and then click 'Connect' and if successful add your queries separated by new lines and click 'Explain'
 
 
 ## Attributions
