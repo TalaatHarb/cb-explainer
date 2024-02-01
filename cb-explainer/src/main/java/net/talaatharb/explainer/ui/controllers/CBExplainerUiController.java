@@ -52,8 +52,28 @@ public class CBExplainerUiController implements Initializable {
 
 	@FXML
 	private void explain() {
-		final String result = explainerFacade.explain(queriesTextArea.getText());
-		planTextArea.setText(result);
+		final String[] queries = queriesTextArea.getText().split("\n\n");
+
+		final StringBuilder builder = new StringBuilder("[");
+		for (int i = 0; i < queries.length; i++) {
+			final String result = explainerFacade.explain(queries[i]);
+
+			if (result.startsWith("{")) {
+				builder.append(result);
+			} else {
+				builder.append("\"");
+				builder.append(result);
+				builder.append("\"");
+			}
+
+			if (i != queries.length - 1) {
+				builder.append(",");
+			}
+		}
+
+		builder.append("]");
+
+		planTextArea.setText(builder.toString());
 	}
 
 	@Override
