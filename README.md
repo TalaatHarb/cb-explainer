@@ -8,10 +8,15 @@ create file cb.properties (that contains connection properties) beside the jar o
 file has to be similar to this:
 
 connection=couchbase://localhost
+
 user=username
+
 pass=password
+
 bucket=bucketName
+
 scope=_default
+
 
 then run the application
 
