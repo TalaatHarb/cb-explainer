@@ -35,8 +35,8 @@ public class HelperBeans {
 	}
 
 	@Bean
-	CBExplainerFacade explainerFacade() {
-		return buildExplainerFacade();
+	CBExplainerFacade explainerFacade(CBConnectionService connectionService, CBExplainerService explainerService) {
+		return buildExplainerFacade(connectionService, explainerService);
 	}
 
 	public static final ObjectMapper buildObjectMapper() {
@@ -54,8 +54,9 @@ public class HelperBeans {
 		return new CBExplainerServiceImpl();
 	}
 
-	public static final CBExplainerFacade buildExplainerFacade() {
-		return new CBExplainerFacadeImpl(buildConnectionService(), buildExplainerService());
+	public static final CBExplainerFacade buildExplainerFacade(CBConnectionService connectionService,
+			CBExplainerService explainerService) {
+		return new CBExplainerFacadeImpl(connectionService, explainerService);
 	}
 
 }
