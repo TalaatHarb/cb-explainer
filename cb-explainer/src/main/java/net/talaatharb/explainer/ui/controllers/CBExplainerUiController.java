@@ -33,6 +33,8 @@ import net.talaatharb.explainer.facade.CBExplainerFacade;
 @RequiredArgsConstructor
 public class CBExplainerUiController implements Initializable {
 
+	private static final String OPERATOR = "#operator";
+
 	private static final int VERTICAL_STEP = 50;
 
 	private static final double CHAR_TO_WIDTH_FACTOR = 6.1;
@@ -188,7 +190,7 @@ public class CBExplainerUiController implements Initializable {
 	}
 
 	private int handleNode(final mxGraph graph, final Object parent, final JsonNode node, int x, int y) {
-		final String operator = node.get("#operator").asText();
+		final String operator = node.get(OPERATOR).asText();
 		if ("Sequence".equals(operator)) {
 			y = drawSequenceChildren(graph, parent, node, x, y);
 		} else if ("Parallel".equals(operator)) {
@@ -227,14 +229,14 @@ public class CBExplainerUiController implements Initializable {
 	}
 
 	private double drawSimpleNode(mxGraph graph, Object parent, JsonNode node, int x, int y) {
-		String operator = node.get("#operator").asText();
+		String operator = node.get(OPERATOR).asText();
 		final StringBuilder builder = new StringBuilder(operator);
 		double width = operator.length() * CHAR_TO_WIDTH_FACTOR;
 
 		if (operator.startsWith("DistinctScan")) {
 			node = node.get("scan");
 			builder.append(": ");
-			operator = node.get("#operator").asText();
+			operator = node.get(OPERATOR).asText();
 			builder.append(operator);
 			width += 2 + operator.length();
 		}
