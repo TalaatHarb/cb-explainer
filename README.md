@@ -1,6 +1,17 @@
 # cb-explainer
 simple application to get explain plan of queries to couchbase
 
+## Why?
+
+Some queries were running faster on DEV environment compared to PROD environment in my work and I wanted to compare the explain plan in both environments.
+
+I ended up comparing the explain plans as JSON but I thought it might be nice if I have visualizations as well.
+
+## Images
+
+<img src="./cb-explainer.PNG">
+
+<img src="./cb-explainer.gif">
 
 ## usage
 create file cb.properties (that contains connection properties) beside the jar or inside root directory
