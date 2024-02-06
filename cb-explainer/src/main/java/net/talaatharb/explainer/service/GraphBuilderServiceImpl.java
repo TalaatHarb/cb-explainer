@@ -1,5 +1,8 @@
 package net.talaatharb.explainer.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.couchbase.client.core.deps.com.google.common.collect.Lists;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mxgraph.view.mxGraph;
@@ -45,7 +48,6 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
 		graph.getModel().beginUpdate();
 		try {
 			handleNode(graph, parent, node.get("plan"), x, y);
-			// graph.insertEdge(parent, null, "Edge", v1, v2);
 		} finally {
 			graph.getModel().endUpdate();
 		}
@@ -82,24 +84,55 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
 		final var scans = Lists.newArrayList(node.get("scans").elements());
 		// draw union node
 		// draw scans
+		final List<Object> startVertices = new ArrayList<>();
+		final double startX = x;
+		int maxY = y;
 		for (final var scan : scans) {
 			final GraphBlockDto result = handleNode(graph, parent, scan, x, y);
-			y = result.getEndY() + STEP;
+			startVertices.add(result.getEndNode());
+			x = result.getEndX() + STEP;
+
+			final int newY = result.getEndY();
+			if (newY > maxY) {
+				maxY = newY;
+			}
 		}
 
-		y += VERTICAL_STEP_PLUS_HEIGHT;
-		graph.insertVertex(parent, null, UNION_SCAN, x, y, 9 * CHAR_TO_WIDTH_FACTOR, DEFAULT_BLOCK_HEIGHT);
-		y += DEFAULT_BLOCK_HEIGHT;
+		final double width = Math.max(9 * CHAR_TO_WIDTH_FACTOR, x - startX - 2 * STEP);
+		final Object endVertex = graph.insertVertex(parent, null, UNION_SCAN, startX, maxY, width,
+				DEFAULT_BLOCK_HEIGHT);
+		y = maxY + DEFAULT_BLOCK_HEIGHT;
 
-		return new GraphBlockDto(null, null, 0, 0, 0, y);
+		for (final var startVertex : startVertices) {
+			graph.insertEdge(parent, null, "", startVertex, endVertex);
+		}
+
+		return new GraphBlockDto(endVertex, endVertex, 0, 0, 0, y);
 	}
 
 	private GraphBlockDto drawIntersectScan(mxGraph graph, Object parent, JsonNode node, int x, int y) {
 		final var scans = Lists.newArrayList(node.get("scans").elements());
+		GraphBlockDto result;
+		final double startX = x;
+		final int startY = y;
+		final List<Object> startVertices = new ArrayList<>();
 		for (final var scan : scans) {
-			x = drawSimpleNode(graph, parent, scan, x, y).getEndX() + STEP;
+			result = drawSimpleNode(graph, parent, scan, x, y);
+			startVertices.add(result.getEndNode());
+			x = result.getEndX() + STEP;
 		}
-		return new GraphBlockDto(null, null, 0, 0, x, VERTICAL_STEP_PLUS_HEIGHT);
+
+		y += VERTICAL_STEP_PLUS_HEIGHT;
+		final double width = Math.max(x - startX - STEP, 13 * CHAR_TO_WIDTH_FACTOR);
+		final Object endVertex = graph.insertVertex(parent, null, INTERSECT_SCAN, startX, y, width,
+				DEFAULT_BLOCK_HEIGHT);
+		y += DEFAULT_BLOCK_HEIGHT;
+
+		for (final var startVertex : startVertices) {
+			graph.insertEdge(parent, null, "", startVertex, endVertex);
+		}
+
+		return new GraphBlockDto(endVertex, endVertex, (int) startX, startY, x, y);
 	}
 
 	private GraphBlockDto drawSimpleNode(mxGraph graph, Object parent, JsonNode node, int x, int y) {
@@ -151,12 +184,27 @@ public class GraphBuilderServiceImpl implements GraphBuilderService {
 	}
 
 	private GraphBlockDto drawSequenceChildren(mxGraph graph, Object parent, JsonNode node, int x, int y) {
-		final var children = Lists.newArrayList(node.get("~children").elements());
+		final List<JsonNode> children = Lists.newArrayList(node.get("~children").elements());
+		final int size = children.size();
 
-		for (final var child : children) {
-			y = handleNode(graph, parent, child, x, y).getEndY();
+		JsonNode child = children.get(0);
+		GraphBlockDto result = handleNode(graph, parent, child, x, y);
+		y = result.getEndY();
+
+		final Object startVertex = result.getEndNode();
+		Object prevVertex = startVertex;
+		Object endVertex = null;
+
+		for (int i = 1; i < size; i++) {
+			child = children.get(i);
+			result = handleNode(graph, parent, child, x, y);
+			y = result.getEndY();
+
+			endVertex = result.getStartNode();
+			graph.insertEdge(parent, null, "", prevVertex, endVertex);
+			prevVertex = endVertex;
 		}
 
-		return new GraphBlockDto(null, null, 0, 0, 0, y);
+		return new GraphBlockDto(startVertex, endVertex, 0, 0, 0, y);
 	}
 }
