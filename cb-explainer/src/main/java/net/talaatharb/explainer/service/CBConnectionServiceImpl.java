@@ -2,6 +2,7 @@ package net.talaatharb.explainer.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -29,23 +30,20 @@ public class CBConnectionServiceImpl implements CBConnectionService {
 	public CouchbaseTemplate connect() {
 		log.info("Connecting....");
 
-		final Properties properties = new Properties();
 		try {
-			final FileInputStream in = new FileInputStream(new File(CONNECTION_FILE));
-			properties.load(in);
+			final Properties properties = loadConnectionDetails();
 
-			final String connectionString = properties.getProperty("connection");
-			final String username = properties.getProperty("user");
-			final String password = properties.getProperty("pass");
-			final String bucketName = properties.getProperty("bucket");
-			final String scope = properties.getProperty("scope");
+			final String connectionString = properties.getProperty(CONNECTION);
+			final String username = properties.getProperty(USER);
+			final String password = properties.getProperty(PASS);
+			final String bucketName = properties.getProperty(BUCKET);
+			final String scope = properties.getProperty(SCOPE);
 
 			// Connect to the cluster
 			final Cluster cluster = Cluster.connect(connectionString, username, password);
 
 			// Create a CouchbaseClientFactory
-			final CouchbaseClientFactory clientFactory = new SimpleCouchbaseClientFactory(cluster, bucketName,
-					scope);
+			final CouchbaseClientFactory clientFactory = new SimpleCouchbaseClientFactory(cluster, bucketName, scope);
 
 			// Create the CouchbaseMappingContext and MappingCouchbaseConverter
 			final CouchbaseMappingContext mappingContext = new CouchbaseMappingContext();
@@ -62,6 +60,30 @@ public class CBConnectionServiceImpl implements CBConnectionService {
 			log.error(e.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public Properties loadConnectionDetails() throws IOException {
+		final Properties properties = new Properties();
+		try (FileInputStream in = new FileInputStream(new File(CONNECTION_FILE))) {
+			properties.load(in);
+		} catch (final IOException e) {
+			log.error(e.getMessage());
+		}
+
+		return properties;
+
+	}
+
+	@Override
+	public void editConnectionDetails(final Properties properties) {
+		try {
+			final FileOutputStream fileOutputStream = new FileOutputStream(new File(CONNECTION_FILE));
+			properties.store(fileOutputStream, "Couchbase connection properties");
+		} catch (final IOException e) {
+			log.error(e.getMessage());
+		}
+
 	}
 
 }

@@ -15,6 +15,8 @@ import net.talaatharb.explainer.service.CBConnectionService;
 import net.talaatharb.explainer.service.CBConnectionServiceImpl;
 import net.talaatharb.explainer.service.CBExplainerService;
 import net.talaatharb.explainer.service.CBExplainerServiceImpl;
+import net.talaatharb.explainer.service.GraphBuilderService;
+import net.talaatharb.explainer.service.GraphBuilderServiceImpl;
 
 @Configuration
 public class HelperBeans {
@@ -39,6 +41,11 @@ public class HelperBeans {
 		return buildExplainerFacade(connectionService, explainerService);
 	}
 
+	@Bean
+	GraphBuilderService graphBuilderService() {
+		return buildGraphBuilderService();
+	}
+
 	public static final ObjectMapper buildObjectMapper() {
 		return JsonMapper.builder().enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS) // ignore case
 				.enable(SerializationFeature.INDENT_OUTPUT) // pretty format for json
@@ -57,6 +64,10 @@ public class HelperBeans {
 	public static final CBExplainerFacade buildExplainerFacade(CBConnectionService connectionService,
 			CBExplainerService explainerService) {
 		return new CBExplainerFacadeImpl(connectionService, explainerService);
+	}
+
+	public static final GraphBuilderService buildGraphBuilderService() {
+		return new GraphBuilderServiceImpl();
 	}
 
 }
