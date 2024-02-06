@@ -117,7 +117,7 @@ public class CBExplainerUiController implements Initializable {
 
 		final StringBuilder builder = new StringBuilder("[\n");
 		for (int i = 0; i < queries.length; i++) {
-			final String query = queries[i];
+			final String query = queries[i].trim();
 			resultsList.add(query);
 
 			final String result = explainerFacade.explain(query);
