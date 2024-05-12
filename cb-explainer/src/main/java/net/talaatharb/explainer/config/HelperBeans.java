@@ -1,8 +1,5 @@
 package net.talaatharb.explainer.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -18,32 +15,9 @@ import net.talaatharb.explainer.service.CBExplainerServiceImpl;
 import net.talaatharb.explainer.service.GraphBuilderService;
 import net.talaatharb.explainer.service.GraphBuilderServiceImpl;
 
-@Configuration
 public class HelperBeans {
 
-	@Bean
-	ObjectMapper objectMapper() {
-		return buildObjectMapper();
-	}
-
-	@Bean
-	CBConnectionService connectionService() {
-		return buildConnectionService();
-	}
-
-	@Bean
-	CBExplainerService explainerService() {
-		return buildExplainerService();
-	}
-
-	@Bean
-	CBExplainerFacade explainerFacade(CBConnectionService connectionService, CBExplainerService explainerService) {
-		return buildExplainerFacade(connectionService, explainerService);
-	}
-
-	@Bean
-	GraphBuilderService graphBuilderService() {
-		return buildGraphBuilderService();
+	private HelperBeans() {
 	}
 
 	public static final ObjectMapper buildObjectMapper() {
